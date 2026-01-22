@@ -1,0 +1,32 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Contact Us | MeroKart{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-20">
+    <div class="max-w-3xl">
+        <h1 class="text-6xl font-black uppercase tracking-tighter mb-8">Get In <span class="text-orange-600">Touch</span></h1>
+        <p class="text-xl text-gray-600 mb-12 font-medium">Have questions? We're here to help you upgrade your wardrobe.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+            <div class="space-y-4">
+                <h3 class="text-xs font-black uppercase tracking-widest text-gray-400">Location</h3>
+                <p class="text-xl font-bold">Durbar Marg, Kathmandu<br>Nepal</p>
+            </div>
+            <div class="space-y-4">
+                <h3 class="text-xs font-black uppercase tracking-widest text-gray-400">Support</h3>
+                <p class="text-xl font-bold">hello@merokart.com.np<br>+977 1 4XXXXXX</p>
+            </div>
+        </div>
+
+        <form class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <input type="text" placeholder="Full Name" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black outline-none rounded-2xl font-bold transition-all">
+                <input type="email" placeholder="Email Address" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black outline-none rounded-2xl font-bold transition-all">
+            </div>
+            <textarea placeholder="Your Message" rows="6" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black outline-none rounded-2xl font-bold transition-all resize-none"></textarea>
+            <button type="button" class="bg-black text-white px-12 py-5 font-black uppercase tracking-widest rounded-2xl hover:bg-orange-600 transition-all transform hover:scale-105">Send Message</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

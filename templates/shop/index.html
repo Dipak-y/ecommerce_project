@@ -1,0 +1,67 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+    <!-- Hero Section -->
+    <section class="relative h-[80vh] flex items-center bg-gray-900 overflow-hidden">
+        <img src="{% static 'shop/images/men-fashion.png' %}" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <div class="relative container mx-auto px-6 z-10">
+            <h1 class="text-6xl md:text-8xl font-black text-white tracking-tighter mb-4 text-balance">
+                NEPAL'S <span class="text-orange-600">STREET</span> CULTURE.
+            </h1>
+            <p class="text-xl text-gray-300 max-w-lg mb-8 text-pretty">
+                MeroKart brings you the finest selection of streetwear and traditional fusion. Crafted for those who dare to be unique.
+            </p>
+            <div class="flex gap-4">
+                <a href="{% url 'shop:product_list' %}" class="px-8 py-4 bg-orange-600 text-white font-bold rounded-none hover:bg-orange-700 transition-all uppercase tracking-widest text-sm">
+                    Shop Now
+                </a>
+                <a href="#featured" class="px-8 py-4 bg-white text-black font-bold rounded-none hover:bg-gray-200 transition-all uppercase tracking-widest text-sm">
+                    Featured
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="featured" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl font-black tracking-tighter uppercase">Featured Drop</h2>
+                    <p class="text-gray-500">Handpicked styles for the season</p>
+                </div>
+                <a href="{% url 'shop:product_list' %}" class="text-sm font-bold uppercase tracking-widest border-b-2 border-black pb-1">View All</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for product in products|slice:":8" %}
+                <div class="group">
+                    <div class="relative aspect-[3/4] bg-gray-100 mb-4 overflow-hidden">
+                        {% if product.image %}
+                        <a href="{% url 'shop:product_detail' product.id product.slug %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </a>
+                        {% else %}
+                        <a href="{% url 'shop:product_detail' product.id product.slug %}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        </a>
+                        {% endif %}
+                        <div class="absolute bottom-4 left-4 right-4 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                            <a href="{% url 'shop:product_detail' product.id product.slug %}" class="w-full block bg-black text-white text-center py-3 text-sm font-bold uppercase tracking-widest">
+                                Quick View
+                            </a>
+                        </div>
+                    </div>
+                    <h3 class="font-bold uppercase tracking-tight">{{ product.name }}</h3>
+                    <p class="text-orange-600 font-black">Rs. {{ product.price }}</p>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 col-span-full text-center py-12">No products featured yet. Visit the admin panel to add some!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

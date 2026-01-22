@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MeroKart | Fashion Nepal{% endblock %}</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+        :root { --accent: #ea580c; }
+        body { font-family: 'Geist', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+    {% include "shop/navbar.html" %}
+    
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 flex flex-col gap-2">
+        {% for message in messages %}
+        <div class="px-4 py-2 rounded-lg shadow-lg {% if message.tags == 'success' %}bg-green-600{% else %}bg-red-600{% endif %} text-white text-sm font-bold">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="bg-black text-white py-20 mt-20">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="col-span-2">
+                <h3 class="text-3xl font-black uppercase tracking-tighter mb-6">Mero<span class="text-orange-600">Kart</span></h3>
+                <p class="text-gray-400 max-w-sm mb-8">Nepal's premier destination for streetwear and traditional fusion fashion. Elevating urban style since 2026.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center hover:bg-orange-600 transition-all"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center hover:bg-orange-600 transition-all"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center hover:bg-orange-600 transition-all"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-6">Company</h4>
+                <ul class="space-y-4 font-bold">
+                    <li><a href="{% url 'shop:about' %}" class="hover:text-orange-600 transition-all">About Us</a></li>
+                    <li><a href="{% url 'shop:contact' %}" class="hover:text-orange-600 transition-all">Contact</a></li>
+                    <li><a href="{% url 'shop:product_list' %}" class="hover:text-orange-600 transition-all">Shop</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-6">Support</h4>
+                <ul class="space-y-4 font-bold text-gray-400">
+                    <li>Shipping Info</li>
+                    <li>Returns & Exchanges</li>
+                    <li>Privacy Policy</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 pt-12 mt-12 border-t border-gray-900 text-[10px] font-black uppercase tracking-widest text-gray-600 flex justify-between">
+            <p>&copy; 2026 MeroKart Nepal. All rights reserved.</p>
+            <p>Designed in Kathmandu</p>
+        </div>
+    </footer>
+</body>
+</html>

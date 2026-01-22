@@ -1,0 +1,21 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Checkout | MeroKart{% endblock %}
+
+{% block content %}
+<section class="py-24">
+  <div class="container mx-auto px-6 max-w-xl">
+    <h2 class="text-4xl font-black tracking-tighter mb-10">Checkout</h2>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit"
+              class="w-full bg-black text-white py-4 uppercase tracking-widest hover:bg-orange-600 transition">
+        Place Order
+      </button>
+    </form>
+  </div>
+</section>
+{% endblock %}

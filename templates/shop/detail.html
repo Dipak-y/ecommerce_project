@@ -1,0 +1,133 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} | MeroKart{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+        <!-- PRODUCT IMAGE -->
+        <div class="bg-gray-100 rounded-3xl overflow-hidden aspect-[3/4]">
+            {% if product.image %}
+                <img src="{{ product.image.url }}"
+                     alt="{{ product.name }}"
+                     class="w-full h-full object-cover">
+            {% endif %}
+        </div>
+
+        <!-- PRODUCT DETAILS -->
+        <div class="flex flex-col justify-center">
+
+            <!-- BREADCRUMB -->
+            <nav class="text-sm text-gray-500 mb-4">
+                <a href="{% url 'shop:home' %}" class="hover:text-orange-600">Home</a>
+                <span class="mx-2">/</span>
+                <a href="{% url 'shop:product_list' %}" class="hover:text-orange-600">Shop</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900 font-medium">{{ product.name }}</span>
+            </nav>
+
+            <!-- TITLE -->
+            <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tight mb-4">
+                {{ product.name }}
+            </h1>
+
+            <!-- PRICE -->
+            <p class="text-3xl font-black text-orange-600 mb-6">
+                Rs. {{ product.price }}
+            </p>
+
+            <!-- DESCRIPTION -->
+            <p class="text-gray-600 text-lg mb-8">
+                {{ product.description }}
+            </p>
+
+            <!-- ADD TO CART FORM -->
+            <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                {% csrf_token %}
+
+                <!-- SIZE -->
+                {% if sizes %}
+<div class="mb-6">
+    <h3 class="text-sm font-bold uppercase mb-3">Select Size</h3>
+    <div class="flex gap-3">
+        {% for size in sizes %}
+        <label class="cursor-pointer">
+            <input type="radio"
+                   name="size"
+                   value="{{ size.variation_value }}"
+                   class="hidden peer"
+                   required>
+            <span class="w-12 h-12 flex items-center justify-center font-bold
+                         border-2 border-gray-300
+                         peer-checked:bg-black
+                         peer-checked:text-white">
+                {{ size.variation_value }}
+            </span>
+        </label>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+                <!-- COLOR -->
+                {% if colors %}
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold uppercase mb-3">Select Color</h3>
+                    <div class="flex gap-3 flex-wrap">
+                        {% for color in colors %}
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="color"
+                                   value="{{ color.variation_value }}"
+                                   class="hidden peer"
+                                   required>
+
+                            <span class="w-20 h-12 flex items-center justify-center font-bold
+                                         border-2 border-gray-300
+                                         peer-checked:bg-black
+                                         peer-checked:text-white
+                                         peer-checked:border-black">
+                                {{ color.variation_value }}
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- QUANTITY -->
+                <div class="mb-6">
+                    <label class="text-sm font-bold uppercase mb-2 block">Quantity</label>
+                    <input type="number"
+                           name="quantity"
+                           value="1"
+                           min="1"
+                           class="w-24 border-2 border-gray-300 px-3 py-2 font-bold">
+                </div>
+
+                <!-- SUBMIT -->
+                <button type="submit"
+                        class="w-full bg-black text-white py-5 font-black uppercase tracking-widest hover:bg-orange-600 transition">
+                    Add to Cart
+                </button>
+            </form>
+
+            <!-- INFO -->
+            <div class="pt-8 mt-8 border-t border-gray-100 space-y-3 text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-truck text-orange-600"></i>
+                    Express delivery across Nepal
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-undo text-orange-600"></i>
+                    7-day easy returns
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

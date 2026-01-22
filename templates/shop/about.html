@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+
+{% block title %}About Us | MeroKart{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+            <h1 class="text-6xl font-black uppercase tracking-tighter mb-8 leading-none">Nepal's Urban<br><span class="text-orange-600">Fashion Hub</span></h1>
+            <p class="text-xl text-gray-600 mb-8 leading-relaxed font-medium">
+                MeroKart is more than just an e-commerce platform. We are the pulse of Nepal's modern fashion scene, bridging the gap between traditional heritage and urban streetwear.
+            </p>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="border-l-4 border-black pl-6">
+                    <h3 class="text-3xl font-black">100%</h3>
+                    <p class="text-sm uppercase tracking-widest font-bold text-gray-400">Authentic</p>
+                </div>
+                <div class="border-l-4 border-black pl-6">
+                    <h3 class="text-3xl font-black">77</h3>
+                    <p class="text-sm uppercase tracking-widest font-bold text-gray-400">Districts</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-100 rounded-[3rem] p-12 aspect-square flex items-center justify-center">
+             <i class="fas fa-mountain text-[15rem] text-gray-200"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}
