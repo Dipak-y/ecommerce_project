@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 
 @login_required
 def order_history(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created')
+    orders = Order.objects.filter(user=request.user, is_checked_by_admin=False).order_by('-created')
     return render(request, 'orders/order_history.html', {'orders': orders})
 
 

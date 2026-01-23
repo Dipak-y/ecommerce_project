@@ -12,40 +12,90 @@
             Admin Dashboard
         </h1>
 
-        <a href="{% url 'accounts:logout' %}"
-           class="bg-primary text-white px-5 py-2 rounded-xl hover:opacity-90 transition">
-            Logout
-        </a>
+        <div class="flex gap-4">
+            <a href="{% url 'dashboard:product_list' %}" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:opacity-90 transition font-black uppercase tracking-widest text-[10px]">
+                Products
+            </a>
+            <a href="{% url 'dashboard:category_list' %}" class="bg-purple-600 text-white px-5 py-2 rounded-xl hover:opacity-90 transition font-black uppercase tracking-widest text-[10px]">
+                Categories
+            </a>
+            <a href="{% url 'dashboard:variation_list' %}" class="bg-green-600 text-white px-5 py-2 rounded-xl hover:opacity-90 transition font-black uppercase tracking-widest text-[10px]">
+                Variations
+            </a>
+            <a href="{% url 'accounts:logout' %}"
+               class="bg-gray-200 text-gray-800 px-5 py-2 rounded-xl hover:bg-gray-300 transition font-black uppercase tracking-widest text-[10px]">
+                Logout
+            </a>
+        </div>
     </div>
 
     <!-- STATS -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <p class="text-gray-500 text-sm">Total Orders</p>
             <p class="text-3xl font-bold text-gray-800">
                 {{ orders.count }}
             </p>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <p class="text-gray-500 text-sm">Paid Orders</p>
             <p class="text-3xl font-bold text-primary">
-                {{ orders|length }}
+                {{ paid_orders }}
             </p>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <p class="text-gray-500 text-sm">Pending Orders</p>
             <p class="text-3xl font-bold text-red-500">
-                {{ orders|length }}
+                {{ pending_orders }}
+            </p>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <p class="text-gray-500 text-sm">Total Revenue</p>
+            <p class="text-3xl font-bold text-green-600">
+                Rs. {{ total_revenue }}
             </p>
         </div>
 
     </div>
 
+    <!-- QUICK ACTIONS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold mb-4">Inventory Summary</h3>
+            <div class="flex justify-between items-center">
+                <span>Total Products:</span>
+                <span class="font-bold">{{ products.count }}</span>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+                <span>Categories:</span>
+                <span class="font-bold">{{ categories.count }}</span>
+            </div>
+            <a href="{% url 'dashboard:product_add' %}" class="mt-4 block text-center bg-gray-800 text-white py-2 rounded-lg">Add New Product</a>
+        </div>
+        
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold mb-4">Low Stock Alerts</h3>
+            <ul class="text-sm">
+                {% for product in products %}
+                    {% if product.stock < 5 %}
+                        <li class="flex justify-between py-1 border-b">
+                            <span>{{ product.name }}</span>
+                            <span class="text-red-600 font-bold">{{ product.stock }} left</span>
+                        </li>
+                    {% endif %}
+                {% empty %}
+                    <li class="text-gray-500 italic">No low stock items.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
     <!-- ORDERS TABLE -->
-    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
 
         <div class="px-6 py-4 border-b">
             <h2 class="text-xl font-semibold text-gray-800">
@@ -62,12 +112,13 @@
                         <th class="px-6 py-3 text-left">Amount</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         <th class="px-6 py-3 text-left">Date</th>
+                        <th class="px-6 py-3 text-right">Action</th>
                     </tr>
                 </thead>
 
                 <tbody class="divide-y">
                     {% for order in orders %}
-                    <tr class="hover:bg-gray-50 transition">
+                    <tr class="hover:bg-gray-50 transition {% if order.is_checked_by_admin %}opacity-50{% endif %}">
                         <td class="px-6 py-4 font-medium">
                             #{{ order.id }}
                         </td>
@@ -94,6 +145,16 @@
 
                         <td class="px-6 py-4 text-gray-500">
                             {{ order.created|date:"M d, Y" }}
+                        </td>
+
+                        <td class="px-6 py-4 text-right">
+                            {% if not order.is_checked_by_admin %}
+                            <a href="{% url 'dashboard:mark_order_checked' order.id %}" class="bg-black text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition">
+                                Check Order
+                            </a>
+                            {% else %}
+                            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Checked</span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}

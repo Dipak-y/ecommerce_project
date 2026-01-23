@@ -2,9 +2,10 @@
 <nav class="bg-white border-b sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="{% url 'shop:home' %}" class="text-2xl font-black tracking-tighter uppercase shrink-0">
-            MeroKart
+            MeroKart{% if user.is_staff %}<span class="text-orange-600 text-xs ml-2 tracking-widest font-black">ADMIN</span>{% endif %}
         </a>
         
+        {% if not user.is_staff %}
         <!-- Search bar - Hidden on small mobile, visible on tablet/desktop -->
         <div class="flex-1 max-w-md mx-4 hidden sm:block">
             <form action="{% url 'shop:product_list' %}" method="get" class="relative">
@@ -15,42 +16,54 @@
                 </button>
             </form>
         </div>
+        {% endif %}
 
         <div class="flex items-center gap-3 sm:gap-6">
-            <!-- Navigation Links - Visible from small screen up -->
-            <div class="hidden sm:flex items-center gap-4 md:gap-8 mr-2">
-                <a href="{% url 'shop:product_list' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">Shop</a>
-                <a href="{% url 'shop:about' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">About</a>
-                <a href="{% url 'shop:contact' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">Contact</a>
-            </div>
-
-            <!-- User Actions -->
-            {% if user.is_authenticated %}
-                <a href="{% url 'shop:profile' %}" class="text-gray-700 hover:text-[#ea580c] transition" title="Profile">
-                    <i class="far fa-user"></i>
+            {% if user.is_staff %}
+                <div class="flex items-center gap-4 md:gap-8 mr-2">
+                    <a href="{% url 'dashboard:admin_dashboard' %}" class="text-xs md:text-sm font-black uppercase tracking-widest text-orange-600 hover:text-black transition">Dashboard</a>
+                    <a href="{% url 'dashboard:product_list' %}" class="text-xs md:text-sm font-black uppercase tracking-widest hover:text-orange-600 transition">Products</a>
+                    <a href="{% url 'dashboard:category_list' %}" class="text-xs md:text-sm font-black uppercase tracking-widest hover:text-orange-600 transition">Categories</a>
+                </div>
+                <a href="{% url 'accounts:logout' %}" class="text-gray-700 hover:text-orange-600 transition" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
                 </a>
-                <a href="{% url 'orders:order_history' %}" class="text-gray-700 hover:text-[#ea580c] transition" title="Orders">
-                    <i class="fas fa-box"></i>
-                </a>
-                <span class="text-xs font-bold hidden xs:inline">{{ user.first_name }}</span>
-               
             {% else %}
-                <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-[#ea580c] transition">
-                    <i class="far fa-user"></i>
-                </a>
-            {% endif %}
-            
-            <a href="{% url 'cart:cart_detail' %}" class="text-gray-700 hover:text-[#ea580c] transition relative">
-                <i class="fas fa-shopping-cart"></i>
-            </a>
+                <!-- Navigation Links - Visible from small screen up -->
+                <div class="hidden sm:flex items-center gap-4 md:gap-8 mr-2">
+                    <a href="{% url 'shop:product_list' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">Shop</a>
+                    <a href="{% url 'shop:about' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">About</a>
+                    <a href="{% url 'shop:contact' %}" class="text-xs md:text-sm font-semibold hover:text-[#ea580c] transition">Contact</a>
+                </div>
 
-            <!-- Mobile Menu Toggle (Smallest screens only) -->
-            <button id="mobile-menu-btn" class="sm:hidden text-gray-700">
-                <i class="fas fa-bars"></i>
-            </button>
+                <!-- User Actions -->
+                {% if user.is_authenticated %}
+                    <a href="{% url 'shop:profile' %}" class="text-gray-700 hover:text-[#ea580c] transition" title="Profile">
+                        <i class="far fa-user"></i>
+                    </a>
+                    <a href="{% url 'orders:order_history' %}" class="text-gray-700 hover:text-[#ea580c] transition" title="Orders">
+                        <i class="fas fa-box"></i>
+                    </a>
+                    <span class="text-xs font-bold hidden xs:inline">{{ user.first_name }}</span>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-[#ea580c] transition">
+                        <i class="far fa-user"></i>
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'cart:cart_detail' %}" class="text-gray-700 hover:text-[#ea580c] transition relative">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+
+                <!-- Mobile Menu Toggle (Smallest screens only) -->
+                <button id="mobile-menu-btn" class="sm:hidden text-gray-700">
+                    <i class="fas fa-bars"></i>
+                </button>
+            {% endif %}
         </div>
     </div>
 
+    {% if not user.is_staff %}
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="hidden sm:hidden border-t bg-white px-6 py-4 space-y-4">
         <form action="{% url 'shop:product_list' %}" method="get" class="relative">
@@ -66,11 +79,15 @@
             <a href="{% url 'shop:contact' %}" class="text-sm font-bold uppercase tracking-widest">Contact</a>
         </div>
     </div>
+    {% endif %}
 </nav>
 
 <script>
-    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-    });
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    }
 </script>

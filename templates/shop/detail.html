@@ -43,33 +43,54 @@
                 {{ product.description }}
             </p>
 
+            {% if user.is_staff %}
+            <!-- ADMIN ACTIONS -->
+            <div class="mt-8 p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                <h3 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Admin Controls</h3>
+                <div class="flex gap-4">
+                    <a href="{% url 'dashboard:product_edit' product.pk %}" 
+                       class="flex-1 bg-blue-600 text-white py-4 text-center font-black uppercase tracking-widest hover:bg-black transition rounded-xl">
+                        Edit Product
+                    </a>
+                    <a href="{% url 'dashboard:product_delete' product.pk %}" 
+                       class="flex-1 bg-red-600 text-white py-4 text-center font-black uppercase tracking-widest hover:bg-black transition rounded-xl"
+                       onclick="return confirm('Delete this product permanently?')">
+                        Delete Product
+                    </a>
+                </div>
+                <a href="{% url 'dashboard:variation_list' %}?product={{ product.id }}" 
+                   class="block mt-4 text-center text-sm font-bold text-gray-600 hover:text-orange-600 transition">
+                    Manage Variations (Sizes/Colors)
+                </a>
+            </div>
+            {% else %}
             <!-- ADD TO CART FORM -->
             <form action="{% url 'cart:cart_add' product.id %}" method="post">
                 {% csrf_token %}
 
                 <!-- SIZE -->
                 {% if sizes %}
-<div class="mb-6">
-    <h3 class="text-sm font-bold uppercase mb-3">Select Size</h3>
-    <div class="flex gap-3">
-        {% for size in sizes %}
-        <label class="cursor-pointer">
-            <input type="radio"
-                   name="size"
-                   value="{{ size.variation_value }}"
-                   class="hidden peer"
-                   required>
-            <span class="w-12 h-12 flex items-center justify-center font-bold
-                         border-2 border-gray-300
-                         peer-checked:bg-black
-                         peer-checked:text-white">
-                {{ size.variation_value }}
-            </span>
-        </label>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold uppercase mb-3">Select Size</h3>
+                    <div class="flex gap-3">
+                        {% for size in sizes %}
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="size"
+                                   value="{{ size.variation_value }}"
+                                   class="hidden peer"
+                                   required>
+                            <span class="w-12 h-12 flex items-center justify-center font-bold
+                                         border-2 border-gray-300
+                                         peer-checked:bg-black
+                                         peer-checked:text-white">
+                                {{ size.variation_value }}
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
 
 
                 <!-- COLOR -->
@@ -114,6 +135,7 @@
                     Add to Cart
                 </button>
             </form>
+            {% endif %}
 
             <!-- INFO -->
             <div class="pt-8 mt-8 border-t border-gray-100 space-y-3 text-sm text-gray-600">
