@@ -52,6 +52,7 @@ class Cart:
     # SAVE SESSION
     # -------------------------------------------------
     def save(self):
+        self.session["cart"] = self.cart
         self.session.modified = True
 
     # -------------------------------------------------
@@ -79,11 +80,13 @@ class Cart:
             if not product:
                 continue
 
-            item["product"] = product
-            item["total_price"] = Decimal(item["price"]) * item["quantity"]
-            item["key"] = key
+            # Create a shallow copy of the item to yield
+            item_to_yield = item.copy()
+            item_to_yield["product"] = product
+            item_to_yield["total_price"] = Decimal(item["price"]) * item["quantity"]
+            item_to_yield["key"] = key
 
-            yield item
+            yield item_to_yield
 
     # -------------------------------------------------
     # TOTAL QUANTITY
@@ -104,5 +107,6 @@ class Cart:
     # CLEAR CART
     # -------------------------------------------------
     def clear(self):
+        self.cart = {}
         self.session["cart"] = {}
         self.save()

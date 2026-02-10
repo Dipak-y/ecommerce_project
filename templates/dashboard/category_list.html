@@ -1,41 +1,38 @@
 {% extends "shop/base.html" %}
+{% block title %}Category Management{% endblock %}
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-10">
-    <div class="flex justify-between items-center mb-10">
-        <h1 class="text-3xl font-black uppercase tracking-tighter text-gray-800">Categories</h1>
-        <a href="{% url 'dashboard:category_add' %}" class="bg-orange-600 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest hover:bg-black transition-all text-xs">
-            New Category
-        </a>
-    </div>
-
-    <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-        <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-500 font-black uppercase tracking-widest text-[10px]">
-                <tr>
-                    <th class="px-6 py-4 text-left">Name</th>
-                    <th class="px-6 py-4 text-left">Slug</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                {% for category in categories %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 font-bold text-gray-800">{{ category.name }}</td>
-                    <td class="px-6 py-4 text-gray-500">{{ category.slug }}</td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <a href="{% url 'dashboard:category_edit' category.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all">
-                                <i class="fas fa-edit text-xs"></i>
-                            </a>
-                            <a href="{% url 'dashboard:category_delete' category.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-red-600 hover:text-white transition-all" onclick="return confirm('Delete this category?')">
-                                <i class="fas fa-trash text-xs"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="flex bg-slate-50 min-h-screen">
+    {% include "dashboard/sidebar.html" %}
+    <div class="flex-1 p-10">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold text-slate-900">Category Management</h1>
+            <a href="/admin/shop/category/add/" class="bg-orange-600 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-all">
+                <i class="fas fa-plus mr-2"></i> New Category
+            </a>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Category Name</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Slug</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100">
+                    {% for category in categories %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-8 py-5 whitespace-nowrap text-sm font-bold text-slate-900">{{ category.name }}</td>
+                        <td class="px-8 py-5 whitespace-nowrap text-sm text-slate-600">{{ category.slug }}</td>
+                        <td class="px-8 py-5 whitespace-nowrap text-sm font-bold">
+                            <a href="/admin/shop/category/{{ category.id }}/change/" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
+                            <a href="/admin/shop/category/{{ category.id }}/delete/" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

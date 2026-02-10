@@ -11,16 +11,19 @@ from orders.models import Order, OrderItem
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+from django.views.decorators.http import require_POST
 
-# -------------------------
-# CART
-# -------------------------
 
+@require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
 
-    cart.add(product=product, quantity=1)
+    quantity = int(request.POST.get('quantity', 1))
+    size = request.POST.get('size')
+    color = request.POST.get('color')
+
+    cart.add(product=product, quantity=quantity, size=size, color=color)
     messages.success(request, f"{product.name} added to cart!")
     return redirect("cart:cart_detail")
 
@@ -67,65 +70,20 @@ def cart_detail(request):
 # STRIPE CHECKOUT
 # -------------------------
 
+
 @login_required
 def checkout(request):
-    cart = Cart(request)
-
-    if not len(cart):
-        messages.error(request, "Your cart is empty")
-        return redirect("cart:cart_detail")
-
-    line_items = []
-    for item in cart:
-        line_items.append({
-            "price_data": {
-                "currency": "usd",
-                "product_data": {
-                    "name": item["product"].name,
-                },
-                "unit_amount": int(Decimal(item["price"]) * 100),
-            },
-            "quantity": item["quantity"],
-        })
-
-    session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=line_items,
-        mode="payment",
-        success_url=request.build_absolute_uri("/cart/stripe/success/"),
-        cancel_url=request.build_absolute_uri("/cart/stripe/cancel/"),
-        customer_email=request.user.email,
-    )
-
-    return redirect(session.url, code=303)
-
+    """
+    Simplified checkout that redirects to the centralized orders:create_checkout_session.
+    """
+    return redirect('orders:create_checkout_session')
 
 @login_required
 def stripe_success(request):
-    cart = Cart(request)
-
-    # Create Order
-    order = Order.objects.create(
-        user=request.user,
-        total_amount=cart.get_total_price(),
-        is_paid=True,
-    )
-
-    # Create Order Items
-    for item in cart:
-        OrderItem.objects.create(
-            order=order,
-            product=item["product"],
-            price=item["price"],
-            quantity=item["quantity"],
-        )
-
-    cart.clear()
-    messages.success(request, "Payment successful! Order placed.")
-
-    # ✅ Redirect to orders section
+    """
+    Handled in orders:order_history now, but kept as a fallback.
+    """
     return redirect("orders:order_history")
-
 
 @login_required
 def stripe_cancel(request):

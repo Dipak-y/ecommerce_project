@@ -1,60 +1,84 @@
 {% extends "shop/base.html" %}
+{% block title %}Manage Products{% endblock %}
 {% block content %}
-<div class="max-w-7xl mx-auto px-6 py-10">
-    <div class="flex justify-between items-center mb-10">
-        <h1 class="text-3xl font-black uppercase tracking-tighter text-gray-800">Products Inventory</h1>
-        <a href="{% url 'dashboard:product_add' %}" class="bg-orange-600 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest hover:bg-black transition-all text-xs">
-            Add New Product
-        </a>
-    </div>
-
-    <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-        <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-500 font-black uppercase tracking-widest text-[10px]">
-                <tr>
-                    <th class="px-6 py-4 text-left">Product</th>
-                    <th class="px-6 py-4 text-left">Category</th>
-                    <th class="px-6 py-4 text-left">Price</th>
-                    <th class="px-6 py-4 text-left">Stock</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                {% for product in products %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-4">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" class="w-10 h-10 object-cover rounded-lg border">
-                            {% else %}
-                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-image text-gray-300"></i>
-                            </div>
-                            {% endif %}
-                            <span class="font-bold text-gray-800">{{ product.name }}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-gray-600">{{ product.category.name }}</td>
-                    <td class="px-6 py-4 font-bold text-orange-600">Rs. {{ product.price }}</td>
-                    <td class="px-6 py-4">
-                        <span class="{% if product.stock < 5 %}text-red-600{% else %}text-gray-600{% endif %} font-black">
-                            {{ product.stock }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <a href="{% url 'dashboard:product_edit' product.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all">
-                                <i class="fas fa-edit text-xs"></i>
-                            </a>
-                            <a href="{% url 'dashboard:product_delete' product.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-red-600 hover:text-white transition-all" onclick="return confirm('Delete this product?')">
-                                <i class="fas fa-trash text-xs"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="flex bg-slate-50 min-h-screen">
+    {% include "dashboard/sidebar.html" %}
+    <div class="flex-1 p-10">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold text-slate-900">Inventory Management</h1>
+            <a href="/admin/shop/product/add/" class="bg-orange-600 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-orange-700 shadow-lg shadow-orange-600/20 transition-all active:scale-95">
+                <i class="fas fa-plus mr-2"></i> New Product
+            </a>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Product</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Category</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Stock</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-100">
+                        {% for product in products %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="px-8 py-5 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-12 w-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                                        {% if product.image %}
+                                        <img class="h-full w-full object-cover" src="{{ product.image.url }}" alt="">
+                                        {% else %}
+                                        <div class="h-full w-full flex items-center justify-center text-slate-400">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-bold text-slate-900">{{ product.name }}</div>
+                                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">SKU-{{ product.id|stringformat:"05d" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 whitespace-nowrap">
+                                <span class="px-2 py-1 text-[10px] font-bold bg-slate-100 text-slate-600 rounded uppercase tracking-tight">{{ product.category.name }}</span>
+                            </td>
+                            <td class="px-8 py-5 whitespace-nowrap text-sm font-black text-slate-900">Rs. {{ product.price }}</td>
+                            <td class="px-8 py-5 whitespace-nowrap">
+                                {% if product.stock < 5 %}
+                                <div class="flex items-center text-red-600">
+                                    <span class="text-sm font-black">{{ product.stock }}</span>
+                                    <span class="ml-2 text-[10px] font-black uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded border border-red-100">Low</span>
+                                </div>
+                                {% else %}
+                                <span class="text-sm font-medium text-slate-600">{{ product.stock }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-8 py-5 whitespace-nowrap">
+                                {% if product.available %}
+                                <span class="flex items-center text-emerald-600 text-[10px] font-black uppercase tracking-widest">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-2"></span> Active
+                                </span>
+                                {% else %}
+                                <span class="flex items-center text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-300 mr-2"></span> Hidden
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-8 py-5 whitespace-nowrap text-sm font-bold">
+                                <a href="/admin/shop/product/{{ product.id }}/change/" class="text-indigo-600 hover:text-indigo-900 mr-4 transition-colors">Edit</a>
+                                <a href="/admin/shop/product/{{ product.id }}/delete/" class="text-slate-400 hover:text-red-600 transition-colors">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

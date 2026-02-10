@@ -1,19 +1,25 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db import models
 from .models import Product, Category, Variation
 
-
-
 def about(request):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
+        return redirect('dashboard:admin_dashboard')
     return render(request, 'shop/about.html')
 
 def contact(request):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
+        return redirect('dashboard:admin_dashboard')
     return render(request, 'shop/contact.html')
 
 def profile(request):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
+        return redirect('dashboard:admin_dashboard')
     return render(request, 'shop/profile.html')
 
 def product_list(request):
+    if request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff):
+        return redirect('dashboard:admin_dashboard')
     products = Product.objects.all()
     categories = Category.objects.all()
 

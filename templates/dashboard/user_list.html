@@ -1,0 +1,43 @@
+{% extends "shop/base.html" %}
+{% block title %}User Management{% endblock %}
+{% block content %}
+<div class="flex bg-slate-50 min-h-screen">
+    {% include "dashboard/sidebar.html" %}
+    <div class="flex-1 p-10">
+        <h1 class="text-3xl font-bold text-slate-900 mb-10">User Authentication</h1>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">User</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Joined</th>
+                        <th class="px-8 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-100">
+                    {% for user in users %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-8 py-5 whitespace-nowrap">
+                            <div class="text-sm font-bold text-slate-900">{{ user.username }}</div>
+                            <div class="text-xs text-slate-500">{{ user.email }}</div>
+                        </td>
+                        <td class="px-8 py-5 whitespace-nowrap">
+                            {% if user.is_active %}
+                            <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">Active</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-slate-100 text-slate-400 border border-slate-200">Disabled</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-5 whitespace-nowrap text-sm text-slate-500">{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td class="px-8 py-5 whitespace-nowrap text-sm font-bold">
+                            <a href="/admin/auth/user/{{ user.id }}/change/" class="text-indigo-600 hover:text-indigo-900 mr-4">Inspect</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

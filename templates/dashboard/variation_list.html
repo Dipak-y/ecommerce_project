@@ -1,53 +1,75 @@
 {% extends "shop/base.html" %}
-{% block content %}
-<div class="max-w-7xl mx-auto px-6 py-10">
-    <div class="flex justify-between items-center mb-10">
-        <h1 class="text-3xl font-black uppercase tracking-tighter text-gray-800">
-            {% if product %}Variations for {{ product.name }}{% else %}All Variations{% endif %}
-        </h1>
-        <a href="{% url 'dashboard:variation_add' %}{% if product %}?product={{ product.id }}{% endif %}" class="bg-orange-600 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest hover:bg-black transition-all text-xs">
-            Add Variation
-        </a>
-    </div>
 
-    <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-        <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-gray-500 font-black uppercase tracking-widest text-[10px]">
-                <tr>
-                    <th class="px-6 py-4 text-left">Product</th>
-                    <th class="px-6 py-4 text-left">Category</th>
-                    <th class="px-6 py-4 text-left">Value</th>
-                    <th class="px-6 py-4 text-left">Active</th>
-                    <th class="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                {% for variation in variations %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 font-bold text-gray-800">{{ variation.product.name }}</td>
-                    <td class="px-6 py-4 text-gray-500 uppercase font-black text-[10px]">{{ variation.variation_category }}</td>
-                    <td class="px-6 py-4 font-black">{{ variation.variation_value }}</td>
-                    <td class="px-6 py-4">
-                        {% if variation.is_active %}
-                        <span class="text-green-600 font-bold">Yes</span>
-                        {% else %}
-                        <span class="text-red-600 font-bold">No</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <a href="{% url 'dashboard:variation_edit' variation.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all">
-                                <i class="fas fa-edit text-xs"></i>
-                            </a>
-                            <a href="{% url 'dashboard:variation_delete' variation.pk %}" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-red-600 hover:text-white transition-all" onclick="return confirm('Delete this variation?')">
-                                <i class="fas fa-trash text-xs"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+{% block title %}Variations | Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-50">
+    {% include "dashboard/sidebar.html" %}
+    
+    <main class="flex-1 p-12">
+        <div class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-4xl font-black uppercase tracking-tighter">Product <span class="text-orange-600">Variations</span></h1>
+                <p class="text-gray-500 font-medium mt-2">Manage sizes and colors for your products</p>
+            </div>
+            <a href="/admin/shop/variation/add/" class="bg-black text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-600 transition flex items-center gap-3">
+                <i class="fas fa-plus"></i> Add Variation
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl border-2 border-gray-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b-2 border-gray-50">
+                        <th class="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Product</th>
+                        <th class="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Category</th>
+                        <th class="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Value</th>
+                        <th class="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Status</th>
+                        <th class="px-8 py-6 text-xs font-black uppercase tracking-widest text-gray-400">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for variation in variations %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-tshirt text-gray-400"></i>
+                                </div>
+                                <span class="font-bold">{{ variation.product.product_name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest rounded-full">
+                                {{ variation.variation_category }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-6 font-bold text-orange-600">{{ variation.variation_value }}</td>
+                        <td class="px-8 py-6">
+                            {% if variation.is_active %}
+                            <span class="flex items-center gap-2 text-green-600 font-bold text-sm">
+                                <span class="w-2 h-2 bg-green-600 rounded-full"></span> Active
+                            </span>
+                            {% else %}
+                            <span class="flex items-center gap-2 text-gray-400 font-bold text-sm">
+                                <span class="w-2 h-2 bg-gray-300 rounded-full"></span> Inactive
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-6">
+                            <a href="/admin/shop/variation/{{ variation.id }}/change/" class="text-sm font-bold hover:underline">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-8 py-20 text-center">
+                            <p class="text-gray-400 font-bold text-xl">No variations found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
 </div>
 {% endblock %}
