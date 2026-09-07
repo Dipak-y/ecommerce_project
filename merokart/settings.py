@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv(
     "django-insecure-change-this-secret-key"
 )
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -22,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.replit.dev",
     "https://*.replit.app",
     "https://*.repl.co",
+    "https://*.vercel.app",
 ]
 
 
@@ -32,17 +33,16 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
 
+    "cloudinary_storage",
+    "django.contrib.staticfiles",
     "cloudinary",
-"cloudinary_storage",
 
     "shop",
     "cart",
     "orders",
     "accounts",
     "dashboard",
-    
 ]
 
 
@@ -140,18 +140,27 @@ STATICFILES_DIRS = [
 
 
 # Media files
-#MEDIA_URL = "/media/"
+MEDIA_URL = "/media/"
 
-#MEDIA_ROOT = BASE_DIR / "media"
-import cloudinary
-import cloudinary_storage
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Cloudinary — Vercel's filesystem is read-only, so uploaded images (product
+# photos etc.) must go to cloud storage instead of local disk, or the admin
+# upload will silently fail / not persist. This makes ALL ImageField/FileField
+# uploads go to Cloudinary automatically instead of MEDIA_ROOT.
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
-
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 
 # Stripe
