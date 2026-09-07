@@ -162,6 +162,12 @@ STORAGES = {
     },
 }
 
+# django-cloudinary-storage's own collectstatic command still reads the old
+# STATICFILES_STORAGE setting directly (not updated for Django's STORAGES
+# dict yet). Keep this in sync with STORAGES["staticfiles"]["BACKEND"] above,
+# purely so that package doesn't crash Vercel's automatic build step.
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
 
 # Stripe
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
