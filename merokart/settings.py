@@ -10,11 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "django-insecure-change-this-secret-key"
+    "SECRET_KEY"
 )
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -24,6 +23,14 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.repl.co",
     "https://*.vercel.app",
 ]
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "False") == "True"
+
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
 
 
 # Applications
@@ -34,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
 
+    "static_override",
     "cloudinary_storage",
     "django.contrib.staticfiles",
     "cloudinary",
